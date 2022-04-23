@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "636233175718",
+    "project_id": "simple-sync-58ca9",
+    "storage_bucket": "simple-sync-58ca9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:636233175718:android:b1d24b2119f5da39ecda67",
+        "android_client_info": {
+          "package_name": "com.brandontrautmann.simplesync"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "636233175718-4idhhg26f48ekc8fn4sfe9020m4fe7kp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.brandontrautmann.simplesync",
+            "certificate_hash": "d4db162e4b3313d830362adb6b0c28d91bfa9794"
+          }
+        },
+        {
+          "client_id": "636233175718-019oaitnihgcn34djr05fb9phf5e9lcl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC145LuOjCNUuG_g1hkdAus9PfcMAMGVOY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "636233175718-019oaitnihgcn34djr05fb9phf5e9lcl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -14,11 +14,16 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
+Reminder _$ReminderFromJson(Map<String, dynamic> json) {
+  return _Reminder.fromJson(json);
+}
+
 /// @nodoc
 mixin _$Reminder {
   String get title => throw _privateConstructorUsedError;
   int get time => throw _privateConstructorUsedError;
 
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $ReminderCopyWith<Reminder> get copyWith =>
       throw _privateConstructorUsedError;
@@ -93,9 +98,12 @@ class __$ReminderCopyWithImpl<$Res> extends _$ReminderCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
+@JsonSerializable()
 class _$_Reminder implements _Reminder {
   _$_Reminder({required this.title, required this.time});
+
+  factory _$_Reminder.fromJson(Map<String, dynamic> json) =>
+      _$$_ReminderFromJson(json);
 
   @override
   final String title;
@@ -116,6 +124,7 @@ class _$_Reminder implements _Reminder {
             const DeepCollectionEquality().equals(other.time, time));
   }
 
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -126,11 +135,18 @@ class _$_Reminder implements _Reminder {
   @override
   _$ReminderCopyWith<_Reminder> get copyWith =>
       __$ReminderCopyWithImpl<_Reminder>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$_ReminderToJson(this);
+  }
 }
 
 abstract class _Reminder implements Reminder {
   factory _Reminder({required final String title, required final int time}) =
       _$_Reminder;
+
+  factory _Reminder.fromJson(Map<String, dynamic> json) = _$_Reminder.fromJson;
 
   @override
   String get title => throw _privateConstructorUsedError;

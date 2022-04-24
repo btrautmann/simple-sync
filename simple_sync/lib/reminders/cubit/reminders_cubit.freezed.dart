@@ -16,7 +16,7 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$RemindersState {
-  User? get user => throw _privateConstructorUsedError;
+  Account? get user => throw _privateConstructorUsedError;
   List<Reminder> get reminders => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -29,7 +29,9 @@ abstract class $RemindersStateCopyWith<$Res> {
   factory $RemindersStateCopyWith(
           RemindersState value, $Res Function(RemindersState) then) =
       _$RemindersStateCopyWithImpl<$Res>;
-  $Res call({User? user, List<Reminder> reminders});
+  $Res call({Account? user, List<Reminder> reminders});
+
+  $AccountCopyWith<$Res>? get user;
 }
 
 /// @nodoc
@@ -50,12 +52,23 @@ class _$RemindersStateCopyWithImpl<$Res>
       user: user == freezed
           ? _value.user
           : user // ignore: cast_nullable_to_non_nullable
-              as User?,
+              as Account?,
       reminders: reminders == freezed
           ? _value.reminders
           : reminders // ignore: cast_nullable_to_non_nullable
               as List<Reminder>,
     ));
+  }
+
+  @override
+  $AccountCopyWith<$Res>? get user {
+    if (_value.user == null) {
+      return null;
+    }
+
+    return $AccountCopyWith<$Res>(_value.user!, (value) {
+      return _then(_value.copyWith(user: value));
+    });
   }
 }
 
@@ -66,7 +79,10 @@ abstract class _$ReminderStateCopyWith<$Res>
           _ReminderState value, $Res Function(_ReminderState) then) =
       __$ReminderStateCopyWithImpl<$Res>;
   @override
-  $Res call({User? user, List<Reminder> reminders});
+  $Res call({Account? user, List<Reminder> reminders});
+
+  @override
+  $AccountCopyWith<$Res>? get user;
 }
 
 /// @nodoc
@@ -89,7 +105,7 @@ class __$ReminderStateCopyWithImpl<$Res>
       user: user == freezed
           ? _value.user
           : user // ignore: cast_nullable_to_non_nullable
-              as User?,
+              as Account?,
       reminders: reminders == freezed
           ? _value.reminders
           : reminders // ignore: cast_nullable_to_non_nullable
@@ -106,7 +122,7 @@ class _$_ReminderState implements _ReminderState {
       : _reminders = reminders;
 
   @override
-  final User? user;
+  final Account? user;
   final List<Reminder> _reminders;
   @override
   List<Reminder> get reminders {
@@ -142,11 +158,11 @@ class _$_ReminderState implements _ReminderState {
 
 abstract class _ReminderState implements RemindersState {
   const factory _ReminderState(
-      {required final User? user,
+      {required final Account? user,
       required final List<Reminder> reminders}) = _$_ReminderState;
 
   @override
-  User? get user => throw _privateConstructorUsedError;
+  Account? get user => throw _privateConstructorUsedError;
   @override
   List<Reminder> get reminders => throw _privateConstructorUsedError;
   @override

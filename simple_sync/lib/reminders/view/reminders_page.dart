@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:simple_sync/reminders/cubit/reminders_cubit.dart';
 import 'package:simple_sync/reminders/models/reminder.dart';
+import 'package:simple_sync/reminders/models/sync_group.dart';
+import 'package:uuid/uuid.dart';
 
 class RemindersPage extends StatelessWidget {
   const RemindersPage({Key? key}) : super(key: key);
@@ -28,23 +30,40 @@ class RemindersList extends StatelessWidget {
       create: (_) => RemindersCubit(),
       child: BlocBuilder<RemindersCubit, RemindersState>(
         builder: (_, state) {
-          if (state.user == null) {
+          final user = state.user;
+          if (user == null) {
             return const CircularProgressIndicator();
           }
           if (state.reminders.isEmpty) {
-            return MaterialButton(
-              onPressed: () async {
-                await showDialog<Reminder>(
-                  context: _,
-                  builder: (context) => CreateReminderDialog(
-                    onReminderValid: (value) {
-                      _.read<RemindersCubit>().createReminder(value);
-                    },
-                  ),
-                );
-              },
-              child: const Text('New Reminder'),
-            );
+            if (user.selectedSyncGroup == null) {
+              return ElevatedButton(
+                onPressed: () async {
+                  await showDialog<Reminder>(
+                    context: _,
+                    builder: (context) => CreateSyncGroupDialog(
+                      onGroupValid: (value) {
+                        _.read<RemindersCubit>().createSyncGroup(value);
+                      },
+                    ),
+                  );
+                },
+                child: const Text('New Group'),
+              );
+            } else {
+              return ElevatedButton(
+                onPressed: () async {
+                  await showDialog<Reminder>(
+                    context: _,
+                    builder: (context) => CreateReminderDialog(
+                      onReminderValid: (value) {
+                        _.read<RemindersCubit>().createReminder(value);
+                      },
+                    ),
+                  );
+                },
+                child: const Text('New Reminder'),
+              );
+            }
           }
           return ListView.builder(
             itemCount: state.reminders.length,
@@ -147,6 +166,81 @@ class _CreateReminderDialogState extends State<CreateReminderDialog> {
                           Reminder(
                             title: controller.text,
                             time: dateTime.microsecondsSinceEpoch,
+                          ),
+                        );
+                        Navigator.pop(context);
+                      }
+                    },
+                    child: const Text('Submit'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class CreateSyncGroupDialog extends StatefulWidget {
+  const CreateSyncGroupDialog({
+    Key? key,
+    required this.onGroupValid,
+  }) : super(key: key);
+
+  final ValueSetter<SyncGroup> onGroupValid;
+
+  @override
+  State<CreateSyncGroupDialog> createState() => _CreateSyncGroupState();
+}
+
+class _CreateSyncGroupState extends State<CreateSyncGroupDialog> {
+  final _formKey = GlobalKey<FormState>();
+  DateTime dateTime = DateTime.now();
+  late TextEditingController controller;
+
+  @override
+  void initState() {
+    controller = TextEditingController();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Center(
+        child: Material(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: TextFormField(
+                      controller: controller,
+                      decoration: const InputDecoration(
+                        hintText: 'Group name',
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter some text';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        widget.onGroupValid(
+                          SyncGroup(
+                            name: controller.text,
+                            id: const Uuid().v4(),
                           ),
                         );
                         Navigator.pop(context);

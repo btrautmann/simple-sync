@@ -100,7 +100,10 @@ class RemindersList extends StatelessWidget {
         return ListView.builder(
           itemCount: state.reminders.length,
           itemBuilder: (_, index) {
-            return ReminderListTile(state.reminders[index]);
+            return ReminderListTile(
+              state.reminders[index],
+              key: ValueKey<String>(state.reminders[index].id),
+            );
           },
         );
       },
@@ -131,7 +134,7 @@ class ReminderListTile extends StatelessWidget {
     final midnightBefore = DateTime(currentDay.year, currentDay.month, currentDay.day);
     final midnightAfter = DateTime(tomorrow.year, tomorrow.month, tomorrow.day);
     final reminderTime =
-        DateTime(currentDay.year, currentDay.month, currentDay.day, currentDay.hour, currentDay.minute);
+        DateTime(currentDay.year, currentDay.month, currentDay.day, reminder.time.hour, reminder.time.minute);
     final lastComplete = DateTime.fromMillisecondsSinceEpoch(reminder.lastCompleteMsSinceEpoch);
     final isCompletedEarly = lastComplete.isAfter(midnightBefore) && lastComplete.isBefore(reminderTime);
     final isCompletedNormally = lastComplete.isBefore(midnightAfter) && lastComplete.isAfter(reminderTime);

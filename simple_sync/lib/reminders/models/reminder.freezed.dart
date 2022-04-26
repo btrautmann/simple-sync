@@ -21,7 +21,9 @@ Reminder _$ReminderFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Reminder {
   String get title => throw _privateConstructorUsedError;
-  int get time => throw _privateConstructorUsedError;
+  @JsonKey(
+      name: 'time', toJson: TimeOfDayX.toJson, fromJson: TimeOfDayX.fromJson)
+  TimeOfDay get time => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -33,7 +35,10 @@ mixin _$Reminder {
 abstract class $ReminderCopyWith<$Res> {
   factory $ReminderCopyWith(Reminder value, $Res Function(Reminder) then) =
       _$ReminderCopyWithImpl<$Res>;
-  $Res call({String title, int time});
+  $Res call(
+      {String title,
+      @JsonKey(name: 'time', toJson: TimeOfDayX.toJson, fromJson: TimeOfDayX.fromJson)
+          TimeOfDay time});
 }
 
 /// @nodoc
@@ -57,7 +62,7 @@ class _$ReminderCopyWithImpl<$Res> implements $ReminderCopyWith<$Res> {
       time: time == freezed
           ? _value.time
           : time // ignore: cast_nullable_to_non_nullable
-              as int,
+              as TimeOfDay,
     ));
   }
 }
@@ -67,7 +72,10 @@ abstract class _$ReminderCopyWith<$Res> implements $ReminderCopyWith<$Res> {
   factory _$ReminderCopyWith(_Reminder value, $Res Function(_Reminder) then) =
       __$ReminderCopyWithImpl<$Res>;
   @override
-  $Res call({String title, int time});
+  $Res call(
+      {String title,
+      @JsonKey(name: 'time', toJson: TimeOfDayX.toJson, fromJson: TimeOfDayX.fromJson)
+          TimeOfDay time});
 }
 
 /// @nodoc
@@ -92,7 +100,7 @@ class __$ReminderCopyWithImpl<$Res> extends _$ReminderCopyWithImpl<$Res>
       time: time == freezed
           ? _value.time
           : time // ignore: cast_nullable_to_non_nullable
-              as int,
+              as TimeOfDay,
     ));
   }
 }
@@ -100,7 +108,10 @@ class __$ReminderCopyWithImpl<$Res> extends _$ReminderCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$_Reminder implements _Reminder {
-  _$_Reminder({required this.title, required this.time});
+  _$_Reminder(
+      {required this.title,
+      @JsonKey(name: 'time', toJson: TimeOfDayX.toJson, fromJson: TimeOfDayX.fromJson)
+          required this.time});
 
   factory _$_Reminder.fromJson(Map<String, dynamic> json) =>
       _$$_ReminderFromJson(json);
@@ -108,7 +119,9 @@ class _$_Reminder implements _Reminder {
   @override
   final String title;
   @override
-  final int time;
+  @JsonKey(
+      name: 'time', toJson: TimeOfDayX.toJson, fromJson: TimeOfDayX.fromJson)
+  final TimeOfDay time;
 
   @override
   String toString() {
@@ -143,15 +156,19 @@ class _$_Reminder implements _Reminder {
 }
 
 abstract class _Reminder implements Reminder {
-  factory _Reminder({required final String title, required final int time}) =
-      _$_Reminder;
+  factory _Reminder(
+      {required final String title,
+      @JsonKey(name: 'time', toJson: TimeOfDayX.toJson, fromJson: TimeOfDayX.fromJson)
+          required final TimeOfDay time}) = _$_Reminder;
 
   factory _Reminder.fromJson(Map<String, dynamic> json) = _$_Reminder.fromJson;
 
   @override
   String get title => throw _privateConstructorUsedError;
   @override
-  int get time => throw _privateConstructorUsedError;
+  @JsonKey(
+      name: 'time', toJson: TimeOfDayX.toJson, fromJson: TimeOfDayX.fromJson)
+  TimeOfDay get time => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
   _$ReminderCopyWith<_Reminder> get copyWith =>

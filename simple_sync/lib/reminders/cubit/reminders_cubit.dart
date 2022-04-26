@@ -48,11 +48,48 @@ class RemindersCubit extends Cubit<RemindersState> {
       final account = Account.fromJson(data);
       emit(state.copyWith(user: account));
     }
+    _firestore.collection('accounts').doc(user.uid).snapshots().listen((event) {
+      final user = Account.fromJson(event.data()!);
+      if (user.selectedSyncGroupId != null) {
+        observeReminders(user.selectedSyncGroupId!);
+      }
+      emit(state.copyWith(user: user));
+    });
   }
 
-  Future<void> observeReminders() async {}
+  Future<void> observeReminders(String selectedSyncGroupId) async {
+    _firestore.collection('groups').doc(selectedSyncGroupId).collection('reminders').snapshots().listen((event) {
+      if (event.docs.isEmpty) {
+        emit(state.copyWith(reminders: List.empty()));
+      } else {
+        final reminders = List<Reminder>.generate(
+          event.docs.length,
+          (index) => Reminder.fromJson(
+            event.docs[index].data(),
+          ),
+        );
+        emit(state.copyWith(reminders: reminders));
+      }
+    });
+  }
 
-  Future<void> createReminder(Reminder reminder) async {}
+  Future<void> createReminder(Reminder reminder) async {
+    final selectedSyncGroupId = state.user?.selectedSyncGroupId;
+    await _firestore.collection('groups').doc(selectedSyncGroupId).collection('reminders').add(
+          reminder.toJson(),
+        );
+  }
 
-  Future<void> createSyncGroup(SyncGroup reminder) async {}
+  Future<void> createSyncGroup(SyncGroup group) async {
+    await Future.wait<void>(
+      [
+        _firestore.collection('groups').doc(group.id).set(group.toJson()),
+        _firestore.collection('accounts').doc(FirebaseAuth.instance.currentUser!.uid).update(
+          <String, dynamic>{
+            'selectedSyncGroupId': group.id,
+          },
+        ),
+      ],
+    );
+  }
 }

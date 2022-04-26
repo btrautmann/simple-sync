@@ -21,6 +21,7 @@ SyncGroup _$SyncGroupFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$SyncGroup {
   String get name => throw _privateConstructorUsedError;
+  String get passphrase => throw _privateConstructorUsedError;
   String get id => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -33,7 +34,7 @@ mixin _$SyncGroup {
 abstract class $SyncGroupCopyWith<$Res> {
   factory $SyncGroupCopyWith(SyncGroup value, $Res Function(SyncGroup) then) =
       _$SyncGroupCopyWithImpl<$Res>;
-  $Res call({String name, String id});
+  $Res call({String name, String passphrase, String id});
 }
 
 /// @nodoc
@@ -47,12 +48,17 @@ class _$SyncGroupCopyWithImpl<$Res> implements $SyncGroupCopyWith<$Res> {
   @override
   $Res call({
     Object? name = freezed,
+    Object? passphrase = freezed,
     Object? id = freezed,
   }) {
     return _then(_value.copyWith(
       name: name == freezed
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      passphrase: passphrase == freezed
+          ? _value.passphrase
+          : passphrase // ignore: cast_nullable_to_non_nullable
               as String,
       id: id == freezed
           ? _value.id
@@ -68,7 +74,7 @@ abstract class _$SyncGroupCopyWith<$Res> implements $SyncGroupCopyWith<$Res> {
           _SyncGroup value, $Res Function(_SyncGroup) then) =
       __$SyncGroupCopyWithImpl<$Res>;
   @override
-  $Res call({String name, String id});
+  $Res call({String name, String passphrase, String id});
 }
 
 /// @nodoc
@@ -83,12 +89,17 @@ class __$SyncGroupCopyWithImpl<$Res> extends _$SyncGroupCopyWithImpl<$Res>
   @override
   $Res call({
     Object? name = freezed,
+    Object? passphrase = freezed,
     Object? id = freezed,
   }) {
     return _then(_SyncGroup(
       name: name == freezed
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      passphrase: passphrase == freezed
+          ? _value.passphrase
+          : passphrase // ignore: cast_nullable_to_non_nullable
               as String,
       id: id == freezed
           ? _value.id
@@ -101,7 +112,8 @@ class __$SyncGroupCopyWithImpl<$Res> extends _$SyncGroupCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$_SyncGroup implements _SyncGroup {
-  _$_SyncGroup({required this.name, required this.id});
+  _$_SyncGroup(
+      {required this.name, required this.passphrase, required this.id});
 
   factory _$_SyncGroup.fromJson(Map<String, dynamic> json) =>
       _$$_SyncGroupFromJson(json);
@@ -109,11 +121,13 @@ class _$_SyncGroup implements _SyncGroup {
   @override
   final String name;
   @override
+  final String passphrase;
+  @override
   final String id;
 
   @override
   String toString() {
-    return 'SyncGroup(name: $name, id: $id)';
+    return 'SyncGroup(name: $name, passphrase: $passphrase, id: $id)';
   }
 
   @override
@@ -122,6 +136,8 @@ class _$_SyncGroup implements _SyncGroup {
         (other.runtimeType == runtimeType &&
             other is _SyncGroup &&
             const DeepCollectionEquality().equals(other.name, name) &&
+            const DeepCollectionEquality()
+                .equals(other.passphrase, passphrase) &&
             const DeepCollectionEquality().equals(other.id, id));
   }
 
@@ -130,6 +146,7 @@ class _$_SyncGroup implements _SyncGroup {
   int get hashCode => Object.hash(
       runtimeType,
       const DeepCollectionEquality().hash(name),
+      const DeepCollectionEquality().hash(passphrase),
       const DeepCollectionEquality().hash(id));
 
   @JsonKey(ignore: true)
@@ -144,14 +161,18 @@ class _$_SyncGroup implements _SyncGroup {
 }
 
 abstract class _SyncGroup implements SyncGroup {
-  factory _SyncGroup({required final String name, required final String id}) =
-      _$_SyncGroup;
+  factory _SyncGroup(
+      {required final String name,
+      required final String passphrase,
+      required final String id}) = _$_SyncGroup;
 
   factory _SyncGroup.fromJson(Map<String, dynamic> json) =
       _$_SyncGroup.fromJson;
 
   @override
   String get name => throw _privateConstructorUsedError;
+  @override
+  String get passphrase => throw _privateConstructorUsedError;
   @override
   String get id => throw _privateConstructorUsedError;
   @override

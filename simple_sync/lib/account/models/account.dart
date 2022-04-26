@@ -1,5 +1,4 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:simple_sync/reminders/models/sync_group.dart';
 
 part 'account.freezed.dart';
 part 'account.g.dart';
@@ -8,7 +7,7 @@ part 'account.g.dart';
 class Account with _$Account {
   factory Account({
     required String id,
-    SyncGroup? selectedSyncGroup,
+    String? selectedSyncGroupId,
   }) = _Account;
   factory Account.fromJson(Map<String, Object?> json) => _$AccountFromJson(json);
 }

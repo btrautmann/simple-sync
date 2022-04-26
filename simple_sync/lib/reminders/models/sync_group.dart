@@ -7,6 +7,7 @@ part 'sync_group.g.dart';
 class SyncGroup with _$SyncGroup {
   factory SyncGroup({
     required String name,
+    required String passphrase,
     required String id,
   }) = _SyncGroup;
 

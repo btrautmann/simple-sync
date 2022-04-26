@@ -12,11 +12,45 @@ class RemindersPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Reminders'),
+    return BlocProvider(
+      create: (context) => RemindersCubit(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Reminders'),
+        ),
+        body: const Center(child: RemindersList()),
+        floatingActionButton: const AddReminderFloatingActionButton(),
       ),
-      body: const Center(child: RemindersList()),
+    );
+  }
+}
+
+class AddReminderFloatingActionButton extends StatelessWidget {
+  const AddReminderFloatingActionButton({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<RemindersCubit, RemindersState>(
+      builder: (_, state) {
+        if (state.user != null && state.reminders.isNotEmpty) {
+          return FloatingActionButton(
+            child: const Icon(Icons.add),
+            onPressed: () async {
+              await showDialog<void>(
+                context: _,
+                builder: (_) {
+                  return CreateReminderDialog(
+                    onReminderValid: (reminder) {
+                      context.read<RemindersCubit>().createReminder(reminder);
+                    },
+                  );
+                },
+              );
+            },
+          );
+        }
+        return const SizedBox.shrink();
+      },
     );
   }
 }
@@ -26,55 +60,65 @@ class RemindersList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => RemindersCubit(),
-      child: BlocBuilder<RemindersCubit, RemindersState>(
-        builder: (_, state) {
-          final user = state.user;
-          if (user == null) {
-            return const CircularProgressIndicator();
+    return BlocBuilder<RemindersCubit, RemindersState>(
+      builder: (_, state) {
+        final user = state.user;
+        if (user == null) {
+          return const CircularProgressIndicator();
+        }
+        if (state.reminders.isEmpty) {
+          if (user.selectedSyncGroupId == null) {
+            return ElevatedButton(
+              onPressed: () async {
+                await showDialog<Reminder>(
+                  context: _,
+                  builder: (context) => CreateSyncGroupDialog(
+                    onGroupValid: (value) {
+                      _.read<RemindersCubit>().createSyncGroup(value);
+                    },
+                  ),
+                );
+              },
+              child: const Text('New Group'),
+            );
+          } else {
+            return ElevatedButton(
+              onPressed: () async {
+                await showDialog<Reminder>(
+                  context: _,
+                  builder: (context) => CreateReminderDialog(
+                    onReminderValid: (value) {
+                      _.read<RemindersCubit>().createReminder(value);
+                    },
+                  ),
+                );
+              },
+              child: const Text('New Reminder'),
+            );
           }
-          if (state.reminders.isEmpty) {
-            if (user.selectedSyncGroup == null) {
-              return ElevatedButton(
-                onPressed: () async {
-                  await showDialog<Reminder>(
-                    context: _,
-                    builder: (context) => CreateSyncGroupDialog(
-                      onGroupValid: (value) {
-                        _.read<RemindersCubit>().createSyncGroup(value);
-                      },
-                    ),
-                  );
+        }
+        return ListView.builder(
+          itemCount: state.reminders.length,
+          itemBuilder: (_, index) {
+            return ListTile(
+              leading: Checkbox(
+                checkColor: Colors.white,
+                value: false,
+                shape: const CircleBorder(),
+                onChanged: (bool? value) {
+                  print('${state.reminders[index].title} clicked');
                 },
-                child: const Text('New Group'),
-              );
-            } else {
-              return ElevatedButton(
-                onPressed: () async {
-                  await showDialog<Reminder>(
-                    context: _,
-                    builder: (context) => CreateReminderDialog(
-                      onReminderValid: (value) {
-                        _.read<RemindersCubit>().createReminder(value);
-                      },
-                    ),
-                  );
-                },
-                child: const Text('New Reminder'),
-              );
-            }
-          }
-          return ListView.builder(
-            itemCount: state.reminders.length,
-            itemBuilder: (_, index) {
-              return ListTile(
-                title: Text(state.reminders[index].title),
-              );
-            },
-          );
-        },
-      ),
+              ),
+              title: Text(state.reminders[index].title),
+              subtitle: Text(
+                state.reminders[index].time.format(
+                  context,
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }
@@ -162,10 +206,11 @@ class _CreateReminderDialogState extends State<CreateReminderDialog> {
                   ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
+                        final timeOfDay = TimeOfDay.fromDateTime(dateTime);
                         widget.onReminderValid(
                           Reminder(
                             title: controller.text,
-                            time: dateTime.microsecondsSinceEpoch,
+                            time: timeOfDay,
                           ),
                         );
                         Navigator.pop(context);
@@ -197,12 +242,13 @@ class CreateSyncGroupDialog extends StatefulWidget {
 
 class _CreateSyncGroupState extends State<CreateSyncGroupDialog> {
   final _formKey = GlobalKey<FormState>();
-  DateTime dateTime = DateTime.now();
-  late TextEditingController controller;
+  late TextEditingController nameController;
+  late TextEditingController passphraseController;
 
   @override
   void initState() {
-    controller = TextEditingController();
+    nameController = TextEditingController();
+    passphraseController = TextEditingController();
     super.initState();
   }
 
@@ -222,9 +268,24 @@ class _CreateSyncGroupState extends State<CreateSyncGroupDialog> {
                   Padding(
                     padding: const EdgeInsets.only(bottom: 16),
                     child: TextFormField(
-                      controller: controller,
+                      controller: nameController,
                       decoration: const InputDecoration(
                         hintText: 'Group name',
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter some text';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: TextFormField(
+                      controller: passphraseController,
+                      decoration: const InputDecoration(
+                        hintText: 'Group passphrase',
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -239,7 +300,8 @@ class _CreateSyncGroupState extends State<CreateSyncGroupDialog> {
                       if (_formKey.currentState!.validate()) {
                         widget.onGroupValid(
                           SyncGroup(
-                            name: controller.text,
+                            name: nameController.text,
+                            passphrase: passphraseController.text,
                             id: const Uuid().v4(),
                           ),
                         );

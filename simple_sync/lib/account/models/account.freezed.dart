@@ -21,7 +21,7 @@ Account _$AccountFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Account {
   String get id => throw _privateConstructorUsedError;
-  SyncGroup? get selectedSyncGroup => throw _privateConstructorUsedError;
+  String? get selectedSyncGroupId => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -32,9 +32,7 @@ mixin _$Account {
 abstract class $AccountCopyWith<$Res> {
   factory $AccountCopyWith(Account value, $Res Function(Account) then) =
       _$AccountCopyWithImpl<$Res>;
-  $Res call({String id, SyncGroup? selectedSyncGroup});
-
-  $SyncGroupCopyWith<$Res>? get selectedSyncGroup;
+  $Res call({String id, String? selectedSyncGroupId});
 }
 
 /// @nodoc
@@ -48,29 +46,18 @@ class _$AccountCopyWithImpl<$Res> implements $AccountCopyWith<$Res> {
   @override
   $Res call({
     Object? id = freezed,
-    Object? selectedSyncGroup = freezed,
+    Object? selectedSyncGroupId = freezed,
   }) {
     return _then(_value.copyWith(
       id: id == freezed
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      selectedSyncGroup: selectedSyncGroup == freezed
-          ? _value.selectedSyncGroup
-          : selectedSyncGroup // ignore: cast_nullable_to_non_nullable
-              as SyncGroup?,
+      selectedSyncGroupId: selectedSyncGroupId == freezed
+          ? _value.selectedSyncGroupId
+          : selectedSyncGroupId // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
-  }
-
-  @override
-  $SyncGroupCopyWith<$Res>? get selectedSyncGroup {
-    if (_value.selectedSyncGroup == null) {
-      return null;
-    }
-
-    return $SyncGroupCopyWith<$Res>(_value.selectedSyncGroup!, (value) {
-      return _then(_value.copyWith(selectedSyncGroup: value));
-    });
   }
 }
 
@@ -79,10 +66,7 @@ abstract class _$AccountCopyWith<$Res> implements $AccountCopyWith<$Res> {
   factory _$AccountCopyWith(_Account value, $Res Function(_Account) then) =
       __$AccountCopyWithImpl<$Res>;
   @override
-  $Res call({String id, SyncGroup? selectedSyncGroup});
-
-  @override
-  $SyncGroupCopyWith<$Res>? get selectedSyncGroup;
+  $Res call({String id, String? selectedSyncGroupId});
 }
 
 /// @nodoc
@@ -97,17 +81,17 @@ class __$AccountCopyWithImpl<$Res> extends _$AccountCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = freezed,
-    Object? selectedSyncGroup = freezed,
+    Object? selectedSyncGroupId = freezed,
   }) {
     return _then(_Account(
       id: id == freezed
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      selectedSyncGroup: selectedSyncGroup == freezed
-          ? _value.selectedSyncGroup
-          : selectedSyncGroup // ignore: cast_nullable_to_non_nullable
-              as SyncGroup?,
+      selectedSyncGroupId: selectedSyncGroupId == freezed
+          ? _value.selectedSyncGroupId
+          : selectedSyncGroupId // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -115,7 +99,7 @@ class __$AccountCopyWithImpl<$Res> extends _$AccountCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$_Account implements _Account {
-  _$_Account({required this.id, this.selectedSyncGroup});
+  _$_Account({required this.id, this.selectedSyncGroupId});
 
   factory _$_Account.fromJson(Map<String, dynamic> json) =>
       _$$_AccountFromJson(json);
@@ -123,11 +107,11 @@ class _$_Account implements _Account {
   @override
   final String id;
   @override
-  final SyncGroup? selectedSyncGroup;
+  final String? selectedSyncGroupId;
 
   @override
   String toString() {
-    return 'Account(id: $id, selectedSyncGroup: $selectedSyncGroup)';
+    return 'Account(id: $id, selectedSyncGroupId: $selectedSyncGroupId)';
   }
 
   @override
@@ -137,7 +121,7 @@ class _$_Account implements _Account {
             other is _Account &&
             const DeepCollectionEquality().equals(other.id, id) &&
             const DeepCollectionEquality()
-                .equals(other.selectedSyncGroup, selectedSyncGroup));
+                .equals(other.selectedSyncGroupId, selectedSyncGroupId));
   }
 
   @JsonKey(ignore: true)
@@ -145,7 +129,7 @@ class _$_Account implements _Account {
   int get hashCode => Object.hash(
       runtimeType,
       const DeepCollectionEquality().hash(id),
-      const DeepCollectionEquality().hash(selectedSyncGroup));
+      const DeepCollectionEquality().hash(selectedSyncGroupId));
 
   @JsonKey(ignore: true)
   @override
@@ -161,14 +145,14 @@ class _$_Account implements _Account {
 abstract class _Account implements Account {
   factory _Account(
       {required final String id,
-      final SyncGroup? selectedSyncGroup}) = _$_Account;
+      final String? selectedSyncGroupId}) = _$_Account;
 
   factory _Account.fromJson(Map<String, dynamic> json) = _$_Account.fromJson;
 
   @override
   String get id => throw _privateConstructorUsedError;
   @override
-  SyncGroup? get selectedSyncGroup => throw _privateConstructorUsedError;
+  String? get selectedSyncGroupId => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
   _$AccountCopyWith<_Account> get copyWith =>

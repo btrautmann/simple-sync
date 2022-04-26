@@ -75,8 +75,15 @@ class RemindersCubit extends Cubit<RemindersState> {
 
   Future<void> createReminder(Reminder reminder) async {
     final selectedSyncGroupId = state.user?.selectedSyncGroupId;
-    await _firestore.collection('groups').doc(selectedSyncGroupId).collection('reminders').add(
+    await _firestore.collection('groups').doc(selectedSyncGroupId).collection('reminders').doc(reminder.id).set(
           reminder.toJson(),
+        );
+  }
+
+  Future<void> completeReminder(Reminder reminder) async {
+    final selectedSyncGroupId = state.user?.selectedSyncGroupId;
+    await _firestore.collection('groups').doc(selectedSyncGroupId).collection('reminders').doc(reminder.id).update(
+          reminder.copyWith(lastCompleteMsSinceEpoch: DateTime.now().millisecondsSinceEpoch).toJson(),
         );
   }
 

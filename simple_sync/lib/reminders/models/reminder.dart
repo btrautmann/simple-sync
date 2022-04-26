@@ -7,7 +7,9 @@ part 'reminder.g.dart';
 @freezed
 class Reminder with _$Reminder {
   factory Reminder({
+    required String id,
     required String title,
+    required int lastCompleteMsSinceEpoch,
     @JsonKey(
       name: 'time',
       toJson: TimeOfDayX.toJson,
@@ -30,5 +32,9 @@ extension TimeOfDayX on TimeOfDay {
       hour: int.parse(splits[0]),
       minute: int.parse(splits[1]),
     );
+  }
+
+  double toDouble() {
+    return hour + minute / 60;
   }
 }

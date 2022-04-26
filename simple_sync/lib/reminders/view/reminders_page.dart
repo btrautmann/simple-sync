@@ -100,25 +100,66 @@ class RemindersList extends StatelessWidget {
         return ListView.builder(
           itemCount: state.reminders.length,
           itemBuilder: (_, index) {
-            return ListTile(
-              leading: Checkbox(
-                checkColor: Colors.white,
-                value: false,
-                shape: const CircleBorder(),
-                onChanged: (bool? value) {
-                  print('${state.reminders[index].title} clicked');
-                },
-              ),
-              title: Text(state.reminders[index].title),
-              subtitle: Text(
-                state.reminders[index].time.format(
-                  context,
-                ),
-              ),
-            );
+            return ReminderListTile(state.reminders[index]);
           },
         );
       },
+    );
+  }
+}
+
+class ReminderListTile extends StatelessWidget {
+  const ReminderListTile(
+    this.reminder, {
+    Key? key,
+  }) : super(key: key);
+
+  final Reminder reminder;
+
+  @override
+  Widget build(BuildContext context) {
+    // If completed, hide
+    // - completed early if last complete is after midnight but before reminder time
+    // - completed normally if last complete is after reminder time but before next midnight
+    // If overdue, show red
+    // - overdue if NOT completed early and time is after reminder time
+    // If not overdue, show normal
+    // - not overdue if NOT completed early and time is before reminder time
+    final currentTime = TimeOfDay.now();
+    final currentDay = DateTime.now();
+    final tomorrow = currentDay.add(const Duration(days: 1));
+    final midnightBefore = DateTime(currentDay.year, currentDay.month, currentDay.day);
+    final midnightAfter = DateTime(tomorrow.year, tomorrow.month, tomorrow.day);
+    final reminderTime =
+        DateTime(currentDay.year, currentDay.month, currentDay.day, currentDay.hour, currentDay.minute);
+    final lastComplete = DateTime.fromMillisecondsSinceEpoch(reminder.lastCompleteMsSinceEpoch);
+    final isCompletedEarly = lastComplete.isAfter(midnightBefore) && lastComplete.isBefore(reminderTime);
+    final isCompletedNormally = lastComplete.isBefore(midnightAfter) && lastComplete.isAfter(reminderTime);
+    final isOverdue = currentTime.toDouble() > reminder.time.toDouble() && !isCompletedEarly;
+
+    if (isCompletedEarly && isCompletedNormally) {
+      return const SizedBox.shrink();
+    }
+
+    return ListTile(
+      leading: Checkbox(
+        checkColor: Colors.white,
+        value: false,
+        shape: const CircleBorder(),
+        onChanged: (bool? value) {
+          context.read<RemindersCubit>().completeReminder(reminder);
+        },
+      ),
+      title: Text(
+        reminder.title,
+        style: isOverdue ? Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.red) : null,
+      ),
+      subtitle: Text(
+        reminder.time.format(
+          context,
+        ),
+        style: isOverdue ? Theme.of(context).textTheme.subtitle2?.copyWith(color: Colors.red) : null,
+      ),
     );
   }
 }
@@ -209,6 +250,8 @@ class _CreateReminderDialogState extends State<CreateReminderDialog> {
                         final timeOfDay = TimeOfDay.fromDateTime(dateTime);
                         widget.onReminderValid(
                           Reminder(
+                            id: const Uuid().v4(),
+                            lastCompleteMsSinceEpoch: 0,
                             title: controller.text,
                             time: timeOfDay,
                           ),

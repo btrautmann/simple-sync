@@ -20,7 +20,9 @@ Reminder _$ReminderFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Reminder {
+  String get id => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
+  int get lastCompleteMsSinceEpoch => throw _privateConstructorUsedError;
   @JsonKey(
       name: 'time', toJson: TimeOfDayX.toJson, fromJson: TimeOfDayX.fromJson)
   TimeOfDay get time => throw _privateConstructorUsedError;
@@ -36,7 +38,9 @@ abstract class $ReminderCopyWith<$Res> {
   factory $ReminderCopyWith(Reminder value, $Res Function(Reminder) then) =
       _$ReminderCopyWithImpl<$Res>;
   $Res call(
-      {String title,
+      {String id,
+      String title,
+      int lastCompleteMsSinceEpoch,
       @JsonKey(name: 'time', toJson: TimeOfDayX.toJson, fromJson: TimeOfDayX.fromJson)
           TimeOfDay time});
 }
@@ -51,14 +55,24 @@ class _$ReminderCopyWithImpl<$Res> implements $ReminderCopyWith<$Res> {
 
   @override
   $Res call({
+    Object? id = freezed,
     Object? title = freezed,
+    Object? lastCompleteMsSinceEpoch = freezed,
     Object? time = freezed,
   }) {
     return _then(_value.copyWith(
+      id: id == freezed
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
       title: title == freezed
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
               as String,
+      lastCompleteMsSinceEpoch: lastCompleteMsSinceEpoch == freezed
+          ? _value.lastCompleteMsSinceEpoch
+          : lastCompleteMsSinceEpoch // ignore: cast_nullable_to_non_nullable
+              as int,
       time: time == freezed
           ? _value.time
           : time // ignore: cast_nullable_to_non_nullable
@@ -73,7 +87,9 @@ abstract class _$ReminderCopyWith<$Res> implements $ReminderCopyWith<$Res> {
       __$ReminderCopyWithImpl<$Res>;
   @override
   $Res call(
-      {String title,
+      {String id,
+      String title,
+      int lastCompleteMsSinceEpoch,
       @JsonKey(name: 'time', toJson: TimeOfDayX.toJson, fromJson: TimeOfDayX.fromJson)
           TimeOfDay time});
 }
@@ -89,14 +105,24 @@ class __$ReminderCopyWithImpl<$Res> extends _$ReminderCopyWithImpl<$Res>
 
   @override
   $Res call({
+    Object? id = freezed,
     Object? title = freezed,
+    Object? lastCompleteMsSinceEpoch = freezed,
     Object? time = freezed,
   }) {
     return _then(_Reminder(
+      id: id == freezed
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
       title: title == freezed
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
               as String,
+      lastCompleteMsSinceEpoch: lastCompleteMsSinceEpoch == freezed
+          ? _value.lastCompleteMsSinceEpoch
+          : lastCompleteMsSinceEpoch // ignore: cast_nullable_to_non_nullable
+              as int,
       time: time == freezed
           ? _value.time
           : time // ignore: cast_nullable_to_non_nullable
@@ -109,7 +135,9 @@ class __$ReminderCopyWithImpl<$Res> extends _$ReminderCopyWithImpl<$Res>
 @JsonSerializable()
 class _$_Reminder implements _Reminder {
   _$_Reminder(
-      {required this.title,
+      {required this.id,
+      required this.title,
+      required this.lastCompleteMsSinceEpoch,
       @JsonKey(name: 'time', toJson: TimeOfDayX.toJson, fromJson: TimeOfDayX.fromJson)
           required this.time});
 
@@ -117,7 +145,11 @@ class _$_Reminder implements _Reminder {
       _$$_ReminderFromJson(json);
 
   @override
+  final String id;
+  @override
   final String title;
+  @override
+  final int lastCompleteMsSinceEpoch;
   @override
   @JsonKey(
       name: 'time', toJson: TimeOfDayX.toJson, fromJson: TimeOfDayX.fromJson)
@@ -125,7 +157,7 @@ class _$_Reminder implements _Reminder {
 
   @override
   String toString() {
-    return 'Reminder(title: $title, time: $time)';
+    return 'Reminder(id: $id, title: $title, lastCompleteMsSinceEpoch: $lastCompleteMsSinceEpoch, time: $time)';
   }
 
   @override
@@ -133,7 +165,10 @@ class _$_Reminder implements _Reminder {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _Reminder &&
+            const DeepCollectionEquality().equals(other.id, id) &&
             const DeepCollectionEquality().equals(other.title, title) &&
+            const DeepCollectionEquality().equals(
+                other.lastCompleteMsSinceEpoch, lastCompleteMsSinceEpoch) &&
             const DeepCollectionEquality().equals(other.time, time));
   }
 
@@ -141,7 +176,9 @@ class _$_Reminder implements _Reminder {
   @override
   int get hashCode => Object.hash(
       runtimeType,
+      const DeepCollectionEquality().hash(id),
       const DeepCollectionEquality().hash(title),
+      const DeepCollectionEquality().hash(lastCompleteMsSinceEpoch),
       const DeepCollectionEquality().hash(time));
 
   @JsonKey(ignore: true)
@@ -157,14 +194,20 @@ class _$_Reminder implements _Reminder {
 
 abstract class _Reminder implements Reminder {
   factory _Reminder(
-      {required final String title,
+      {required final String id,
+      required final String title,
+      required final int lastCompleteMsSinceEpoch,
       @JsonKey(name: 'time', toJson: TimeOfDayX.toJson, fromJson: TimeOfDayX.fromJson)
           required final TimeOfDay time}) = _$_Reminder;
 
   factory _Reminder.fromJson(Map<String, dynamic> json) = _$_Reminder.fromJson;
 
   @override
+  String get id => throw _privateConstructorUsedError;
+  @override
   String get title => throw _privateConstructorUsedError;
+  @override
+  int get lastCompleteMsSinceEpoch => throw _privateConstructorUsedError;
   @override
   @JsonKey(
       name: 'time', toJson: TimeOfDayX.toJson, fromJson: TimeOfDayX.fromJson)

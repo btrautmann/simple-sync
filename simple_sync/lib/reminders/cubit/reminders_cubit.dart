@@ -87,6 +87,10 @@ class RemindersCubit extends Cubit<RemindersState> {
         );
   }
 
+  Future<void> joinSyncGroup() async {
+    
+  }
+
   Future<void> createSyncGroup(SyncGroup group) async {
     await Future.wait<void>(
       [

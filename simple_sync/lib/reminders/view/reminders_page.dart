@@ -17,6 +17,12 @@ class RemindersPage extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Reminders'),
+          actions: [
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.people),
+            )
+          ],
         ),
         body: const Center(child: RemindersList()),
         floatingActionButton: const AddReminderFloatingActionButton(),
@@ -128,19 +134,30 @@ class ReminderListTile extends StatelessWidget {
     // - overdue if NOT completed early and time is after reminder time
     // If not overdue, show normal
     // - not overdue if NOT completed early and time is before reminder time
+    print('REMINDER => ${reminder.title}');
     final currentTime = TimeOfDay.now();
+    print('current time is $currentTime');
     final currentDay = DateTime.now();
+    print('current day is $currentDay');
     final tomorrow = currentDay.add(const Duration(days: 1));
+    print('tomorrow is $tomorrow');
     final midnightBefore = DateTime(currentDay.year, currentDay.month, currentDay.day);
+    print('midnight before is $midnightBefore');
     final midnightAfter = DateTime(tomorrow.year, tomorrow.month, tomorrow.day);
+    print('midnight after is $midnightAfter');
     final reminderTime =
         DateTime(currentDay.year, currentDay.month, currentDay.day, reminder.time.hour, reminder.time.minute);
+    print('reminder time is $reminderTime');
     final lastComplete = DateTime.fromMillisecondsSinceEpoch(reminder.lastCompleteMsSinceEpoch);
+    print('last complete is $lastComplete');
     final isCompletedEarly = lastComplete.isAfter(midnightBefore) && lastComplete.isBefore(reminderTime);
+    print('isCompletedEarly is $isCompletedEarly');
     final isCompletedNormally = lastComplete.isBefore(midnightAfter) && lastComplete.isAfter(reminderTime);
-    final isOverdue = currentTime.toDouble() > reminder.time.toDouble() && !isCompletedEarly;
+    print('isCompletedNormally is $isCompletedNormally');
+    final isOverdue = currentTime.toDouble() > reminder.time.toDouble() && !isCompletedEarly && !isCompletedNormally;
+    print('isOverdue is $isOverdue');
 
-    if (isCompletedEarly && isCompletedNormally) {
+    if (isCompletedEarly || isCompletedNormally) {
       return const SizedBox.shrink();
     }
 

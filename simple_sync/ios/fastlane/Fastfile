@@ -9,16 +9,40 @@
 #
 #     https://docs.fastlane.tools/plugins/available-plugins
 #
-
-# Uncomment the line if you want fastlane to automatically update itself
-# update_fastlane
+update_fastlane
 
 default_platform(:ios)
 
 platform :ios do
-  desc "Push a new release build to the App Store"
-  lane :release do
-    build_app(workspace: "Runner.xcworkspace", scheme: "Runner")
-    upload_to_app_store(skip_metadata: true, skip_screenshots: true)
+  desc "Deploy a new version to Test Flight"
+  lane :deploy do
+    create_keychain(
+      name: "TempKeychain",
+      password: "TempPassword",
+      default_keychain: true,
+      unlock: true,
+      timeout: 3600,
+      lock_when_sleeps: true
+    )
+    app_store_connect_api_key(
+      is_key_content_base64: true,
+      duration: 1200, # optional (maximum 1200)
+      in_house: false # optional but may be required if using match/sigh
+    )
+    match(
+      type: "appstore",
+      keychain_name: "TempKeychain",
+      keychain_password: "TempPassword",
+      readonly: true)
+    sh("flutter", "clean")
+    sh("flutter", "packages", "get")
+    cocoapods(
+      clean_install: true,
+      podfile: "./Podfile"
+    )
+    sh("flutter", "build", "ipa", "--flavor=production", "--target=lib/main_production.dart", "--export-options-plist=ios/export_options.plist", "-v")
+    upload_to_testflight(
+      ipa: "../build/ios/ipa/SimpleSync.ipa",
+      skip_waiting_for_build_processing: true
+    )
   end
-end

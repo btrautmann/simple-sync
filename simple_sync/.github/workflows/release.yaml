@@ -1,11 +1,11 @@
-name: mobile deployment
+name: Release
 
 on:
   push:
     branches:
       - main
     paths:
-      - mobile/**
+      - ios/**
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:

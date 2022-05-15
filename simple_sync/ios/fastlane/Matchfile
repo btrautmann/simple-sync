@@ -1,0 +1,5 @@
+git_url("git@github.com:btrautmann/simple-sync-signing.git")
+
+app_identifier("com.brandontrautmann.simplesync")
+username("brandontrautmann@gmail.com")
+git_branch("main")

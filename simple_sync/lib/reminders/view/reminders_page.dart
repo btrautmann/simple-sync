@@ -18,30 +18,32 @@ class RemindersPage extends StatelessWidget {
         appBar: AppBar(
           title: const Text('Reminders'),
           actions: [
-            Builder(builder: (builderContext) {
-              return IconButton(
-                onPressed: () async {
-                  await showDialog<Reminder>(
-                    context: builderContext,
-                    builder: (_) => JoinSyncGroupDialog(
-                      onJoinSubmit: (name, passphrase) async {
-                        final success = await builderContext.read<RemindersCubit>().joinSyncGroup(
-                              name,
-                              passphrase,
-                            );
-                        final message = success ? 'Success!' : 'Incorrect group name or passphrase.';
-                        if (success) {
-                          ScaffoldMessenger.of(builderContext)
-                            ..clearSnackBars()
-                            ..showSnackBar(SnackBar(content: Text(message)));
-                        }
-                      },
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.people),
-              );
-            })
+            Builder(
+              builder: (builderContext) {
+                return IconButton(
+                  onPressed: () async {
+                    await showDialog<Reminder>(
+                      context: builderContext,
+                      builder: (_) => JoinSyncGroupDialog(
+                        onJoinSubmit: (name, passphrase) async {
+                          final success = await builderContext.read<RemindersCubit>().joinSyncGroup(
+                                name,
+                                passphrase,
+                              );
+                          final message = success ? 'Success!' : 'Incorrect group name or passphrase.';
+                          if (success) {
+                            ScaffoldMessenger.of(builderContext)
+                              ..clearSnackBars()
+                              ..showSnackBar(SnackBar(content: Text(message)));
+                          }
+                        },
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.people),
+                );
+              },
+            )
           ],
         ),
         body: const Center(child: RemindersList()),

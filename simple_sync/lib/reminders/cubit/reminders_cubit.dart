@@ -91,7 +91,6 @@ class RemindersCubit extends Cubit<RemindersState> {
   Future<bool> joinSyncGroup(String groupName, String passphrase) async {
     final groupsQuery = await _firestore.collection('groups').get();
     final groups = groupsQuery.docs.map((e) {
-      print('Data is ${e.data()}');
       return SyncGroup.fromJson(e.data());
     });
     final joinedGroup = groups.singleWhereOrNull(

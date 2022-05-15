@@ -13,15 +13,35 @@ class RemindersPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => RemindersCubit(),
+      create: (_) => RemindersCubit(),
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Reminders'),
           actions: [
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.people),
-            )
+            Builder(builder: (builderContext) {
+              return IconButton(
+                onPressed: () async {
+                  await showDialog<Reminder>(
+                    context: builderContext,
+                    builder: (_) => JoinSyncGroupDialog(
+                      onJoinSubmit: (name, passphrase) async {
+                        final success = await builderContext.read<RemindersCubit>().joinSyncGroup(
+                              name,
+                              passphrase,
+                            );
+                        final message = success ? 'Success!' : 'Incorrect group name or passphrase.';
+                        if (success) {
+                          ScaffoldMessenger.of(builderContext)
+                            ..clearSnackBars()
+                            ..showSnackBar(SnackBar(content: Text(message)));
+                        }
+                      },
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.people),
+              );
+            })
           ],
         ),
         body: const Center(child: RemindersList()),
@@ -367,6 +387,95 @@ class _CreateSyncGroupState extends State<CreateSyncGroupDialog> {
                             passphrase: passphraseController.text,
                             id: const Uuid().v4(),
                           ),
+                        );
+                        Navigator.pop(context);
+                      }
+                    },
+                    child: const Text('Submit'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class JoinSyncGroupDialog extends StatefulWidget {
+  const JoinSyncGroupDialog({
+    Key? key,
+    required this.onJoinSubmit,
+  }) : super(key: key);
+
+  final void Function(String groupName, String passphrase) onJoinSubmit;
+
+  @override
+  State<JoinSyncGroupDialog> createState() => _JoinSyncGroupState();
+}
+
+class _JoinSyncGroupState extends State<JoinSyncGroupDialog> {
+  final _formKey = GlobalKey<FormState>();
+  late TextEditingController nameController;
+  late TextEditingController passphraseController;
+
+  @override
+  void initState() {
+    nameController = TextEditingController();
+    passphraseController = TextEditingController();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Center(
+        child: Material(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: TextFormField(
+                      controller: nameController,
+                      decoration: const InputDecoration(
+                        hintText: 'Group name',
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter some text';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: TextFormField(
+                      controller: passphraseController,
+                      decoration: const InputDecoration(
+                        hintText: 'Group passphrase',
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter some text';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        widget.onJoinSubmit(
+                          nameController.text,
+                          passphraseController.text,
                         );
                         Navigator.pop(context);
                       }

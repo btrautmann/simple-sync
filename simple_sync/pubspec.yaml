@@ -9,6 +9,7 @@ environment:
 dependencies:
   bloc: ^8.0.2
   cloud_firestore: ^3.1.13
+  collection: ^1.15.0
   datetime_picker_formfield: ^2.0.0
   firebase_auth: ^3.3.15
   firebase_core: ^1.15.0

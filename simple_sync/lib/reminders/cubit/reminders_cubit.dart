@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:simple_sync/account/models/account.dart';
@@ -67,7 +68,7 @@ class RemindersCubit extends Cubit<RemindersState> {
           (index) => Reminder.fromJson(
             event.docs[index].data(),
           ),
-        );
+        )..sort((r1, r2) => r1.time.toDouble().compareTo(r2.time.toDouble()));
         emit(state.copyWith(reminders: reminders));
       }
     });
@@ -87,8 +88,37 @@ class RemindersCubit extends Cubit<RemindersState> {
         );
   }
 
-  Future<void> joinSyncGroup() async {
-    
+  Future<bool> joinSyncGroup(String groupName, String passphrase) async {
+    final groupsQuery = await _firestore.collection('groups').get();
+    final groups = groupsQuery.docs.map((e) {
+      print('Data is ${e.data()}');
+      return SyncGroup.fromJson(e.data());
+    });
+    final joinedGroup = groups.singleWhereOrNull(
+      (group) => group.name == groupName && passphrase == group.passphrase,
+    );
+    if (joinedGroup != null) {
+      await Future.wait<void>(
+        [
+          _firestore
+              .collection('groups')
+              .doc(joinedGroup.id)
+              .collection('members')
+              .doc(FirebaseAuth.instance.currentUser!.uid)
+              .set(<String, dynamic>{
+            'id': FirebaseAuth.instance.currentUser!.uid,
+            'approved': true,
+          }),
+          _firestore.collection('accounts').doc(FirebaseAuth.instance.currentUser!.uid).update(
+            <String, dynamic>{
+              'selectedSyncGroupId': joinedGroup.id,
+            },
+          ),
+        ],
+      );
+      return true;
+    }
+    return false;
   }
 
   Future<void> createSyncGroup(SyncGroup group) async {

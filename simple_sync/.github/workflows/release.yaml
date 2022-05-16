@@ -25,7 +25,7 @@ jobs:
           xcode-version: latest-stable
       
       - name: Bundle install
-        run: cd ios && bundle install
+        run: cd simple_sync/ios && bundle install
     
       - name: Deploy iOS to TestFlight
         env:
@@ -35,4 +35,4 @@ jobs:
           APP_STORE_CONNECT_API_KEY_KEY: ${{secrets.APP_STORE_CONNECT_API_KEY}}
           APP_STORE_CONNECT_API_KEY_KEY_ID: ${{secrets.APP_STORE_CONNECT_API_KEY_ID}}
           APP_STORE_CONNECT_API_KEY_ISSUER_ID: ${{secrets.APP_STORE_CONNECT_API_KEY_ISSUER}}
-        run: cd ios && bundle exec fastlane deploy
+        run: cd simple_sync/ios && bundle exec fastlane deploy

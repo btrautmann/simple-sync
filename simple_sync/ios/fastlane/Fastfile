@@ -9,7 +9,7 @@
 #
 #     https://docs.fastlane.tools/plugins/available-plugins
 #
-update_fastlane
+# update_fastlane
 
 default_platform(:ios)
 
@@ -35,13 +35,20 @@ platform :ios do
       keychain_password: "TempPassword",
       readonly: true
     )
-    sh("flutter", "clean")
-    sh("flutter", "packages", "get")
+    sh("flutter", "pub", "get")
     cocoapods(
       clean_install: true,
       podfile: "./Podfile"
     )
-    sh("flutter", "build", "ipa", "--flavor=production", "--target=lib/main_production.dart", "--export-options-plist=ios/export_options.plist", "-v")
+    sh(
+      "flutter",
+      "build",
+      "ipa",
+      "--flavor=production",
+      "--target=lib/main_production.dart",
+      "--export-options-plist=ios/export_options.plist",
+      "-v"
+    )
     upload_to_testflight(
       ipa: "../build/ios/ipa/Simple Sync.ipa",
       skip_waiting_for_build_processing: true

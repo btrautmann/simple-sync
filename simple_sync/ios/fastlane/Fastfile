@@ -33,7 +33,8 @@ platform :ios do
       type: "appstore",
       keychain_name: "TempKeychain",
       keychain_password: "TempPassword",
-      readonly: true)
+      readonly: true
+    )
     sh("flutter", "clean")
     sh("flutter", "packages", "get")
     cocoapods(

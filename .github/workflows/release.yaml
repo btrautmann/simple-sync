@@ -10,6 +10,10 @@ on:
 
 jobs:
   deploy-ios:
+    defaults:
+      run:
+        shell: bash
+        working-directory: simple_sync/ios
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
@@ -25,14 +29,14 @@ jobs:
           xcode-version: latest-stable
       
       - name: Bundle install
-        run: cd ios && bundle install
+        run: bundle install
     
       - name: Deploy iOS to TestFlight
         env:
           MATCH_PASSWORD: ${{secrets.MATCH_PASSWORD}}
           MATCH_KEYCHAIN_PASSWORD: ${{secrets.MATCH_PASSWORD}}
-          MATCH_GIT_BASIC_AUTHORIZATION: ${{secrets.BASIC_AUTH_HEADER}}
+          # MATCH_GIT_BASIC_AUTHORIZATION: ${{secrets.BASIC_AUTH_HEADER}}
           APP_STORE_CONNECT_API_KEY_KEY: ${{secrets.APP_STORE_CONNECT_API_KEY}}
           APP_STORE_CONNECT_API_KEY_KEY_ID: ${{secrets.APP_STORE_CONNECT_API_KEY_ID}}
           APP_STORE_CONNECT_API_KEY_ISSUER_ID: ${{secrets.APP_STORE_CONNECT_API_KEY_ISSUER}}
-        run: cd ios && bundle exec fastlane deploy
+        run: bundle exec fastlane deploy

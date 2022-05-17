@@ -49,7 +49,7 @@ platform :ios do
       "build",
       "ipa",
       "--build-number=#{build_number}",
-      "--build-name=#{build_name}",
+      "--build-name=#{version_name}",
       "--flavor=production",
       "--target=lib/main_production.dart",
       "--export-options-plist=ios/export_options.plist",

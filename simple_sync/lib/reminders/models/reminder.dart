@@ -10,6 +10,7 @@ class Reminder with _$Reminder {
     required String id,
     required String title,
     required int lastCompleteMsSinceEpoch,
+    // ignore: invalid_annotation_target
     @JsonKey(
       name: 'time',
       toJson: TimeOfDayX.toJson,

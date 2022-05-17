@@ -69,22 +69,23 @@ class _$SyncGroupCopyWithImpl<$Res> implements $SyncGroupCopyWith<$Res> {
 }
 
 /// @nodoc
-abstract class _$SyncGroupCopyWith<$Res> implements $SyncGroupCopyWith<$Res> {
-  factory _$SyncGroupCopyWith(
-          _SyncGroup value, $Res Function(_SyncGroup) then) =
-      __$SyncGroupCopyWithImpl<$Res>;
+abstract class _$$_SyncGroupCopyWith<$Res> implements $SyncGroupCopyWith<$Res> {
+  factory _$$_SyncGroupCopyWith(
+          _$_SyncGroup value, $Res Function(_$_SyncGroup) then) =
+      __$$_SyncGroupCopyWithImpl<$Res>;
   @override
   $Res call({String name, String passphrase, String id});
 }
 
 /// @nodoc
-class __$SyncGroupCopyWithImpl<$Res> extends _$SyncGroupCopyWithImpl<$Res>
-    implements _$SyncGroupCopyWith<$Res> {
-  __$SyncGroupCopyWithImpl(_SyncGroup _value, $Res Function(_SyncGroup) _then)
-      : super(_value, (v) => _then(v as _SyncGroup));
+class __$$_SyncGroupCopyWithImpl<$Res> extends _$SyncGroupCopyWithImpl<$Res>
+    implements _$$_SyncGroupCopyWith<$Res> {
+  __$$_SyncGroupCopyWithImpl(
+      _$_SyncGroup _value, $Res Function(_$_SyncGroup) _then)
+      : super(_value, (v) => _then(v as _$_SyncGroup));
 
   @override
-  _SyncGroup get _value => super._value as _SyncGroup;
+  _$_SyncGroup get _value => super._value as _$_SyncGroup;
 
   @override
   $Res call({
@@ -92,7 +93,7 @@ class __$SyncGroupCopyWithImpl<$Res> extends _$SyncGroupCopyWithImpl<$Res>
     Object? passphrase = freezed,
     Object? id = freezed,
   }) {
-    return _then(_SyncGroup(
+    return _then(_$_SyncGroup(
       name: name == freezed
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -134,7 +135,7 @@ class _$_SyncGroup implements _SyncGroup {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _SyncGroup &&
+            other is _$_SyncGroup &&
             const DeepCollectionEquality().equals(other.name, name) &&
             const DeepCollectionEquality()
                 .equals(other.passphrase, passphrase) &&
@@ -151,8 +152,8 @@ class _$_SyncGroup implements _SyncGroup {
 
   @JsonKey(ignore: true)
   @override
-  _$SyncGroupCopyWith<_SyncGroup> get copyWith =>
-      __$SyncGroupCopyWithImpl<_SyncGroup>(this, _$identity);
+  _$$_SyncGroupCopyWith<_$_SyncGroup> get copyWith =>
+      __$$_SyncGroupCopyWithImpl<_$_SyncGroup>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
@@ -177,6 +178,6 @@ abstract class _SyncGroup implements SyncGroup {
   String get id => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
-  _$SyncGroupCopyWith<_SyncGroup> get copyWith =>
+  _$$_SyncGroupCopyWith<_$_SyncGroup> get copyWith =>
       throw _privateConstructorUsedError;
 }

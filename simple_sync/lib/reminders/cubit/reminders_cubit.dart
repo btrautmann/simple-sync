@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
@@ -15,6 +17,7 @@ class RemindersCubit extends Cubit<RemindersState> {
       : super(
           RemindersState(
             user: null,
+            syncGroup: null,
             reminders: List.empty(),
           ),
         ) {
@@ -29,13 +32,13 @@ class RemindersCubit extends Cubit<RemindersState> {
         if (user == null) {
           FirebaseAuth.instance.signInAnonymously();
         } else {
-          _onLogin(user);
+          _observeUser(user);
         }
       },
     );
   }
 
-  Future<void> _onLogin(User user) async {
+  Future<void> _observeUser(User user) async {
     final accountDoc = await _firestore.collection('accounts').doc(user.uid).get();
     final data = accountDoc.data();
     if (data == null) {
@@ -49,12 +52,20 @@ class RemindersCubit extends Cubit<RemindersState> {
       final account = Account.fromJson(data);
       emit(state.copyWith(user: account));
     }
-    _firestore.collection('accounts').doc(user.uid).snapshots().listen((event) {
+    _firestore.collection('accounts').doc(user.uid).snapshots().listen((event) async {
       final user = Account.fromJson(event.data()!);
       if (user.selectedSyncGroupId != null) {
-        observeReminders(user.selectedSyncGroupId!);
+        unawaited(observeGroup(user.selectedSyncGroupId!));
+        unawaited(observeReminders(user.selectedSyncGroupId!));
       }
       emit(state.copyWith(user: user));
+    });
+  }
+
+  Future<void> observeGroup(String selectedSyncGroupId) async {
+    _firestore.collection('groups').doc(selectedSyncGroupId).snapshots().listen((event) {
+      final group = SyncGroup.fromJson(event.data()!);
+      emit(state.copyWith(syncGroup: group));
     });
   }
 
@@ -104,10 +115,13 @@ class RemindersCubit extends Cubit<RemindersState> {
               .doc(joinedGroup.id)
               .collection('members')
               .doc(FirebaseAuth.instance.currentUser!.uid)
-              .set(<String, dynamic>{
-            'id': FirebaseAuth.instance.currentUser!.uid,
-            'approved': true,
-          }),
+              .set(
+            <String, dynamic>{
+              'id': FirebaseAuth.instance.currentUser!.uid,
+              'approved': true,
+            },
+            SetOptions(merge: true),
+          ),
           _firestore.collection('accounts').doc(FirebaseAuth.instance.currentUser!.uid).update(
             <String, dynamic>{
               'selectedSyncGroupId': joinedGroup.id,

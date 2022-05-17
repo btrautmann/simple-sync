@@ -22,7 +22,8 @@ Reminder _$ReminderFromJson(Map<String, dynamic> json) {
 mixin _$Reminder {
   String get id => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
-  int get lastCompleteMsSinceEpoch => throw _privateConstructorUsedError;
+  int get lastCompleteMsSinceEpoch =>
+      throw _privateConstructorUsedError; // ignore: invalid_annotation_target
   @JsonKey(
       name: 'time', toJson: TimeOfDayX.toJson, fromJson: TimeOfDayX.fromJson)
   TimeOfDay get time => throw _privateConstructorUsedError;
@@ -82,9 +83,10 @@ class _$ReminderCopyWithImpl<$Res> implements $ReminderCopyWith<$Res> {
 }
 
 /// @nodoc
-abstract class _$ReminderCopyWith<$Res> implements $ReminderCopyWith<$Res> {
-  factory _$ReminderCopyWith(_Reminder value, $Res Function(_Reminder) then) =
-      __$ReminderCopyWithImpl<$Res>;
+abstract class _$$_ReminderCopyWith<$Res> implements $ReminderCopyWith<$Res> {
+  factory _$$_ReminderCopyWith(
+          _$_Reminder value, $Res Function(_$_Reminder) then) =
+      __$$_ReminderCopyWithImpl<$Res>;
   @override
   $Res call(
       {String id,
@@ -95,13 +97,14 @@ abstract class _$ReminderCopyWith<$Res> implements $ReminderCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$ReminderCopyWithImpl<$Res> extends _$ReminderCopyWithImpl<$Res>
-    implements _$ReminderCopyWith<$Res> {
-  __$ReminderCopyWithImpl(_Reminder _value, $Res Function(_Reminder) _then)
-      : super(_value, (v) => _then(v as _Reminder));
+class __$$_ReminderCopyWithImpl<$Res> extends _$ReminderCopyWithImpl<$Res>
+    implements _$$_ReminderCopyWith<$Res> {
+  __$$_ReminderCopyWithImpl(
+      _$_Reminder _value, $Res Function(_$_Reminder) _then)
+      : super(_value, (v) => _then(v as _$_Reminder));
 
   @override
-  _Reminder get _value => super._value as _Reminder;
+  _$_Reminder get _value => super._value as _$_Reminder;
 
   @override
   $Res call({
@@ -110,7 +113,7 @@ class __$ReminderCopyWithImpl<$Res> extends _$ReminderCopyWithImpl<$Res>
     Object? lastCompleteMsSinceEpoch = freezed,
     Object? time = freezed,
   }) {
-    return _then(_Reminder(
+    return _then(_$_Reminder(
       id: id == freezed
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -150,6 +153,7 @@ class _$_Reminder implements _Reminder {
   final String title;
   @override
   final int lastCompleteMsSinceEpoch;
+// ignore: invalid_annotation_target
   @override
   @JsonKey(
       name: 'time', toJson: TimeOfDayX.toJson, fromJson: TimeOfDayX.fromJson)
@@ -164,7 +168,7 @@ class _$_Reminder implements _Reminder {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _Reminder &&
+            other is _$_Reminder &&
             const DeepCollectionEquality().equals(other.id, id) &&
             const DeepCollectionEquality().equals(other.title, title) &&
             const DeepCollectionEquality().equals(
@@ -183,8 +187,8 @@ class _$_Reminder implements _Reminder {
 
   @JsonKey(ignore: true)
   @override
-  _$ReminderCopyWith<_Reminder> get copyWith =>
-      __$ReminderCopyWithImpl<_Reminder>(this, _$identity);
+  _$$_ReminderCopyWith<_$_Reminder> get copyWith =>
+      __$$_ReminderCopyWithImpl<_$_Reminder>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
@@ -208,12 +212,12 @@ abstract class _Reminder implements Reminder {
   String get title => throw _privateConstructorUsedError;
   @override
   int get lastCompleteMsSinceEpoch => throw _privateConstructorUsedError;
-  @override
+  @override // ignore: invalid_annotation_target
   @JsonKey(
       name: 'time', toJson: TimeOfDayX.toJson, fromJson: TimeOfDayX.fromJson)
   TimeOfDay get time => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
-  _$ReminderCopyWith<_Reminder> get copyWith =>
+  _$$_ReminderCopyWith<_$_Reminder> get copyWith =>
       throw _privateConstructorUsedError;
 }

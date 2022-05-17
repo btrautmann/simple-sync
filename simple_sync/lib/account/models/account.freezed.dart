@@ -62,28 +62,29 @@ class _$AccountCopyWithImpl<$Res> implements $AccountCopyWith<$Res> {
 }
 
 /// @nodoc
-abstract class _$AccountCopyWith<$Res> implements $AccountCopyWith<$Res> {
-  factory _$AccountCopyWith(_Account value, $Res Function(_Account) then) =
-      __$AccountCopyWithImpl<$Res>;
+abstract class _$$_AccountCopyWith<$Res> implements $AccountCopyWith<$Res> {
+  factory _$$_AccountCopyWith(
+          _$_Account value, $Res Function(_$_Account) then) =
+      __$$_AccountCopyWithImpl<$Res>;
   @override
   $Res call({String id, String? selectedSyncGroupId});
 }
 
 /// @nodoc
-class __$AccountCopyWithImpl<$Res> extends _$AccountCopyWithImpl<$Res>
-    implements _$AccountCopyWith<$Res> {
-  __$AccountCopyWithImpl(_Account _value, $Res Function(_Account) _then)
-      : super(_value, (v) => _then(v as _Account));
+class __$$_AccountCopyWithImpl<$Res> extends _$AccountCopyWithImpl<$Res>
+    implements _$$_AccountCopyWith<$Res> {
+  __$$_AccountCopyWithImpl(_$_Account _value, $Res Function(_$_Account) _then)
+      : super(_value, (v) => _then(v as _$_Account));
 
   @override
-  _Account get _value => super._value as _Account;
+  _$_Account get _value => super._value as _$_Account;
 
   @override
   $Res call({
     Object? id = freezed,
     Object? selectedSyncGroupId = freezed,
   }) {
-    return _then(_Account(
+    return _then(_$_Account(
       id: id == freezed
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -118,7 +119,7 @@ class _$_Account implements _Account {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _Account &&
+            other is _$_Account &&
             const DeepCollectionEquality().equals(other.id, id) &&
             const DeepCollectionEquality()
                 .equals(other.selectedSyncGroupId, selectedSyncGroupId));
@@ -133,8 +134,8 @@ class _$_Account implements _Account {
 
   @JsonKey(ignore: true)
   @override
-  _$AccountCopyWith<_Account> get copyWith =>
-      __$AccountCopyWithImpl<_Account>(this, _$identity);
+  _$$_AccountCopyWith<_$_Account> get copyWith =>
+      __$$_AccountCopyWithImpl<_$_Account>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
@@ -155,6 +156,6 @@ abstract class _Account implements Account {
   String? get selectedSyncGroupId => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
-  _$AccountCopyWith<_Account> get copyWith =>
+  _$$_AccountCopyWith<_$_Account> get copyWith =>
       throw _privateConstructorUsedError;
 }

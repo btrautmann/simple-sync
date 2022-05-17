@@ -4,6 +4,7 @@ part of 'reminders_cubit.dart';
 class RemindersState with _$RemindersState {
   const factory RemindersState({
     required Account? user,
+    required SyncGroup? syncGroup,
     required List<Reminder> reminders,
   }) = _ReminderState;
 }

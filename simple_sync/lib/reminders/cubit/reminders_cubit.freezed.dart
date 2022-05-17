@@ -17,6 +17,7 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$RemindersState {
   Account? get user => throw _privateConstructorUsedError;
+  SyncGroup? get syncGroup => throw _privateConstructorUsedError;
   List<Reminder> get reminders => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -29,9 +30,10 @@ abstract class $RemindersStateCopyWith<$Res> {
   factory $RemindersStateCopyWith(
           RemindersState value, $Res Function(RemindersState) then) =
       _$RemindersStateCopyWithImpl<$Res>;
-  $Res call({Account? user, List<Reminder> reminders});
+  $Res call({Account? user, SyncGroup? syncGroup, List<Reminder> reminders});
 
   $AccountCopyWith<$Res>? get user;
+  $SyncGroupCopyWith<$Res>? get syncGroup;
 }
 
 /// @nodoc
@@ -46,6 +48,7 @@ class _$RemindersStateCopyWithImpl<$Res>
   @override
   $Res call({
     Object? user = freezed,
+    Object? syncGroup = freezed,
     Object? reminders = freezed,
   }) {
     return _then(_value.copyWith(
@@ -53,6 +56,10 @@ class _$RemindersStateCopyWithImpl<$Res>
           ? _value.user
           : user // ignore: cast_nullable_to_non_nullable
               as Account?,
+      syncGroup: syncGroup == freezed
+          ? _value.syncGroup
+          : syncGroup // ignore: cast_nullable_to_non_nullable
+              as SyncGroup?,
       reminders: reminders == freezed
           ? _value.reminders
           : reminders // ignore: cast_nullable_to_non_nullable
@@ -70,44 +77,62 @@ class _$RemindersStateCopyWithImpl<$Res>
       return _then(_value.copyWith(user: value));
     });
   }
+
+  @override
+  $SyncGroupCopyWith<$Res>? get syncGroup {
+    if (_value.syncGroup == null) {
+      return null;
+    }
+
+    return $SyncGroupCopyWith<$Res>(_value.syncGroup!, (value) {
+      return _then(_value.copyWith(syncGroup: value));
+    });
+  }
 }
 
 /// @nodoc
-abstract class _$ReminderStateCopyWith<$Res>
+abstract class _$$_ReminderStateCopyWith<$Res>
     implements $RemindersStateCopyWith<$Res> {
-  factory _$ReminderStateCopyWith(
-          _ReminderState value, $Res Function(_ReminderState) then) =
-      __$ReminderStateCopyWithImpl<$Res>;
+  factory _$$_ReminderStateCopyWith(
+          _$_ReminderState value, $Res Function(_$_ReminderState) then) =
+      __$$_ReminderStateCopyWithImpl<$Res>;
   @override
-  $Res call({Account? user, List<Reminder> reminders});
+  $Res call({Account? user, SyncGroup? syncGroup, List<Reminder> reminders});
 
   @override
   $AccountCopyWith<$Res>? get user;
+  @override
+  $SyncGroupCopyWith<$Res>? get syncGroup;
 }
 
 /// @nodoc
-class __$ReminderStateCopyWithImpl<$Res>
+class __$$_ReminderStateCopyWithImpl<$Res>
     extends _$RemindersStateCopyWithImpl<$Res>
-    implements _$ReminderStateCopyWith<$Res> {
-  __$ReminderStateCopyWithImpl(
-      _ReminderState _value, $Res Function(_ReminderState) _then)
-      : super(_value, (v) => _then(v as _ReminderState));
+    implements _$$_ReminderStateCopyWith<$Res> {
+  __$$_ReminderStateCopyWithImpl(
+      _$_ReminderState _value, $Res Function(_$_ReminderState) _then)
+      : super(_value, (v) => _then(v as _$_ReminderState));
 
   @override
-  _ReminderState get _value => super._value as _ReminderState;
+  _$_ReminderState get _value => super._value as _$_ReminderState;
 
   @override
   $Res call({
     Object? user = freezed,
+    Object? syncGroup = freezed,
     Object? reminders = freezed,
   }) {
-    return _then(_ReminderState(
+    return _then(_$_ReminderState(
       user: user == freezed
           ? _value.user
           : user // ignore: cast_nullable_to_non_nullable
               as Account?,
+      syncGroup: syncGroup == freezed
+          ? _value.syncGroup
+          : syncGroup // ignore: cast_nullable_to_non_nullable
+              as SyncGroup?,
       reminders: reminders == freezed
-          ? _value.reminders
+          ? _value._reminders
           : reminders // ignore: cast_nullable_to_non_nullable
               as List<Reminder>,
     ));
@@ -118,11 +143,15 @@ class __$ReminderStateCopyWithImpl<$Res>
 
 class _$_ReminderState implements _ReminderState {
   const _$_ReminderState(
-      {required this.user, required final List<Reminder> reminders})
+      {required this.user,
+      required this.syncGroup,
+      required final List<Reminder> reminders})
       : _reminders = reminders;
 
   @override
   final Account? user;
+  @override
+  final SyncGroup? syncGroup;
   final List<Reminder> _reminders;
   @override
   List<Reminder> get reminders {
@@ -132,41 +161,47 @@ class _$_ReminderState implements _ReminderState {
 
   @override
   String toString() {
-    return 'RemindersState(user: $user, reminders: $reminders)';
+    return 'RemindersState(user: $user, syncGroup: $syncGroup, reminders: $reminders)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _ReminderState &&
+            other is _$_ReminderState &&
             const DeepCollectionEquality().equals(other.user, user) &&
-            const DeepCollectionEquality().equals(other.reminders, reminders));
+            const DeepCollectionEquality().equals(other.syncGroup, syncGroup) &&
+            const DeepCollectionEquality()
+                .equals(other._reminders, _reminders));
   }
 
   @override
   int get hashCode => Object.hash(
       runtimeType,
       const DeepCollectionEquality().hash(user),
-      const DeepCollectionEquality().hash(reminders));
+      const DeepCollectionEquality().hash(syncGroup),
+      const DeepCollectionEquality().hash(_reminders));
 
   @JsonKey(ignore: true)
   @override
-  _$ReminderStateCopyWith<_ReminderState> get copyWith =>
-      __$ReminderStateCopyWithImpl<_ReminderState>(this, _$identity);
+  _$$_ReminderStateCopyWith<_$_ReminderState> get copyWith =>
+      __$$_ReminderStateCopyWithImpl<_$_ReminderState>(this, _$identity);
 }
 
 abstract class _ReminderState implements RemindersState {
   const factory _ReminderState(
       {required final Account? user,
+      required final SyncGroup? syncGroup,
       required final List<Reminder> reminders}) = _$_ReminderState;
 
   @override
   Account? get user => throw _privateConstructorUsedError;
   @override
+  SyncGroup? get syncGroup => throw _privateConstructorUsedError;
+  @override
   List<Reminder> get reminders => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
-  _$ReminderStateCopyWith<_ReminderState> get copyWith =>
+  _$$_ReminderStateCopyWith<_$_ReminderState> get copyWith =>
       throw _privateConstructorUsedError;
 }

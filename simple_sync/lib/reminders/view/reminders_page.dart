@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:simple_sync/reminders/cubit/reminders_cubit.dart';
 import 'package:simple_sync/reminders/models/reminder.dart';
 import 'package:simple_sync/reminders/models/sync_group.dart';
+import 'package:timer_builder/timer_builder.dart';
 import 'package:uuid/uuid.dart';
 
 class RemindersPage extends StatelessWidget {
@@ -16,39 +17,53 @@ class RemindersPage extends StatelessWidget {
       create: (_) => RemindersCubit(),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Reminders'),
-          actions: [
-            Builder(
-              builder: (builderContext) {
-                return IconButton(
-                  onPressed: () async {
-                    await showDialog<Reminder>(
-                      context: builderContext,
-                      builder: (_) => JoinSyncGroupDialog(
-                        onJoinSubmit: (name, passphrase) async {
-                          final success = await builderContext.read<RemindersCubit>().joinSyncGroup(
-                                name,
-                                passphrase,
-                              );
-                          final message = success ? 'Success!' : 'Incorrect group name or passphrase.';
-                          if (success) {
-                            ScaffoldMessenger.of(builderContext)
-                              ..clearSnackBars()
-                              ..showSnackBar(SnackBar(content: Text(message)));
-                          }
-                        },
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.people),
-                );
-              },
-            )
+          title: BlocBuilder<RemindersCubit, RemindersState>(
+            builder: (context, state) {
+              final selectedGroup = state.syncGroup;
+              return selectedGroup == null ? const Text('Simple Sync') : Text(selectedGroup.name);
+            },
+          ),
+          actions: const [
+            _JoinGroupButton(),
           ],
         ),
         body: const Center(child: RemindersList()),
         floatingActionButton: const AddReminderFloatingActionButton(),
       ),
+    );
+  }
+}
+
+class _JoinGroupButton extends StatefulWidget {
+  const _JoinGroupButton({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  State<_JoinGroupButton> createState() => _JoinGroupButtonState();
+}
+
+class _JoinGroupButtonState extends State<_JoinGroupButton> {
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: () async {
+        await showDialog<Reminder>(
+          context: context,
+          builder: (dialog) => JoinSyncGroupDialog(
+            onJoinSubmit: (name, passphrase) async {
+              final success = await context.read<RemindersCubit>().joinSyncGroup(name, passphrase);
+              final message = success ? 'Success!' : 'Incorrect group name or passphrase.';
+              if (success && mounted) {
+                ScaffoldMessenger.of(dialog)
+                  ..clearSnackBars()
+                  ..showSnackBar(SnackBar(content: Text(message)));
+              }
+            },
+          ),
+        );
+      },
+      icon: const Icon(Icons.people),
     );
   }
 }
@@ -125,12 +140,19 @@ class RemindersList extends StatelessWidget {
             );
           }
         }
-        return ListView.builder(
-          itemCount: state.reminders.length,
-          itemBuilder: (_, index) {
-            return ReminderListTile(
-              state.reminders[index],
-              key: ValueKey<String>(state.reminders[index].id),
+        // Rebuild the list every minute for now, because this will cause items to turn
+        // red when they are due if the screen is currently shown
+        return TimerBuilder.periodic(
+          const Duration(minutes: 1),
+          builder: (_) {
+            return ListView.builder(
+              itemCount: state.reminders.length,
+              itemBuilder: (_, index) {
+                return ReminderListTile(
+                  state.reminders[index],
+                  key: ValueKey<String>(state.reminders[index].id),
+                );
+              },
             );
           },
         );
@@ -156,28 +178,17 @@ class ReminderListTile extends StatelessWidget {
     // - overdue if NOT completed early and time is after reminder time
     // If not overdue, show normal
     // - not overdue if NOT completed early and time is before reminder time
-    print('REMINDER => ${reminder.title}');
     final currentTime = TimeOfDay.now();
-    print('current time is $currentTime');
     final currentDay = DateTime.now();
-    print('current day is $currentDay');
     final tomorrow = currentDay.add(const Duration(days: 1));
-    print('tomorrow is $tomorrow');
     final midnightBefore = DateTime(currentDay.year, currentDay.month, currentDay.day);
-    print('midnight before is $midnightBefore');
     final midnightAfter = DateTime(tomorrow.year, tomorrow.month, tomorrow.day);
-    print('midnight after is $midnightAfter');
     final reminderTime =
         DateTime(currentDay.year, currentDay.month, currentDay.day, reminder.time.hour, reminder.time.minute);
-    print('reminder time is $reminderTime');
     final lastComplete = DateTime.fromMillisecondsSinceEpoch(reminder.lastCompleteMsSinceEpoch);
-    print('last complete is $lastComplete');
     final isCompletedEarly = lastComplete.isAfter(midnightBefore) && lastComplete.isBefore(reminderTime);
-    print('isCompletedEarly is $isCompletedEarly');
     final isCompletedNormally = lastComplete.isBefore(midnightAfter) && lastComplete.isAfter(reminderTime);
-    print('isCompletedNormally is $isCompletedNormally');
     final isOverdue = currentTime.toDouble() > reminder.time.toDouble() && !isCompletedEarly && !isCompletedNormally;
-    print('isOverdue is $isOverdue');
 
     if (isCompletedEarly || isCompletedNormally) {
       return const SizedBox.shrink();

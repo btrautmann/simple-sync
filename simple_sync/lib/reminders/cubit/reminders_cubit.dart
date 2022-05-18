@@ -111,7 +111,7 @@ class RemindersCubit extends Cubit<RemindersState> {
       }
       unawaited(FirebaseCrashlytics.instance.log('Scheduling notification for $time'));
       await plugin.zonedSchedule(
-        int.parse(reminder.id.replaceAll(RegExp('[^0-9]'), '').substring(0, 3)),
+        int.parse(reminder.id.replaceAll(RegExp('[^0-9]'), '').substring(0, 5)),
         '// TODO: Include group name',
         reminder.title,
         time,

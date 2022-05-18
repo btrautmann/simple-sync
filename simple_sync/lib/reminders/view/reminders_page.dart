@@ -1,7 +1,9 @@
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
+import 'package:simple_sync/account/models/account.dart';
 import 'package:simple_sync/reminders/cubit/reminders_cubit.dart';
 import 'package:simple_sync/reminders/models/reminder.dart';
 import 'package:simple_sync/reminders/models/sync_group.dart';
@@ -23,13 +25,64 @@ class RemindersPage extends StatelessWidget {
               return selectedGroup == null ? const Text('Simple Sync') : Text(selectedGroup.name);
             },
           ),
-          actions: const [
-            _JoinGroupButton(),
+          actions: [
+            const _JoinGroupButton(),
+            BlocBuilder<RemindersCubit, RemindersState>(
+              builder: (context, state) {
+                return _DiagnosticsButton(
+                  account: state.user,
+                  notifications: state.notifications,
+                );
+              },
+            ),
           ],
         ),
         body: const Center(child: RemindersList()),
         floatingActionButton: const AddReminderFloatingActionButton(),
       ),
+    );
+  }
+}
+
+class _DiagnosticsButton extends StatefulWidget {
+  const _DiagnosticsButton({
+    Key? key,
+    required this.account,
+    required this.notifications,
+  }) : super(key: key);
+
+  final Account? account;
+  final List<PendingNotificationRequest>? notifications;
+
+  @override
+  State<_DiagnosticsButton> createState() => _DiagnosticsButtonState();
+}
+
+class _DiagnosticsButtonState extends State<_DiagnosticsButton> {
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: () async {
+        await showDialog<void>(
+          context: context,
+          builder: (dialog) => Center(
+            child: Material(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('uId: ${widget.account?.id}'),
+                    Text('PNs:\n${widget.notifications?.map((e) => '${e.title}:${e.body}').join(',\n')}'),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+      icon: const Icon(Icons.computer),
     );
   }
 }

@@ -6,5 +6,6 @@ class RemindersState with _$RemindersState {
     required Account? user,
     required SyncGroup? syncGroup,
     required List<Reminder> reminders,
+    @Default(<PendingNotificationRequest>[]) List<PendingNotificationRequest> notifications,
   }) = _ReminderState;
 }

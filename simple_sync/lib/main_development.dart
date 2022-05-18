@@ -5,16 +5,12 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:simple_sync/app/app.dart';
 import 'package:simple_sync/bootstrap.dart';
-import 'package:simple_sync/firebase_options.dart';
+import 'package:simple_sync/log.dart';
 
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  await bootstrap(() => const App());
+void main() {
+  Log.logLevel = Level.verbose;
+  bootstrap(() => const App());
 }

@@ -4,10 +4,10 @@ import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:simple_sync/account/models/account.dart';
+import 'package:simple_sync/log.dart';
 import 'package:simple_sync/reminders/models/reminder.dart';
 import 'package:simple_sync/reminders/models/sync_group.dart';
 import 'package:timezone/timezone.dart' as tz;
@@ -58,21 +58,21 @@ class RemindersCubit extends Cubit<RemindersState> {
     _firestore.collection('accounts').doc(user.uid).snapshots().listen((event) async {
       final user = Account.fromJson(event.data()!);
       if (user.selectedSyncGroupId != null) {
-        unawaited(observeGroup(user.selectedSyncGroupId!));
-        unawaited(observeReminders(user.selectedSyncGroupId!));
+        unawaited(_observeGroup(user.selectedSyncGroupId!));
+        unawaited(_observeReminders(user.selectedSyncGroupId!));
       }
       emit(state.copyWith(user: user));
     });
   }
 
-  Future<void> observeGroup(String selectedSyncGroupId) async {
+  Future<void> _observeGroup(String selectedSyncGroupId) async {
     _firestore.collection('groups').doc(selectedSyncGroupId).snapshots().listen((event) {
       final group = SyncGroup.fromJson(event.data()!);
       emit(state.copyWith(syncGroup: group));
     });
   }
 
-  Future<void> observeReminders(String selectedSyncGroupId) async {
+  Future<void> _observeReminders(String selectedSyncGroupId) async {
     _firestore.collection('groups').doc(selectedSyncGroupId).collection('reminders').snapshots().listen((event) {
       if (event.docs.isEmpty) {
         emit(state.copyWith(reminders: List.empty()));
@@ -83,14 +83,17 @@ class RemindersCubit extends Cubit<RemindersState> {
             event.docs[index].data(),
           ),
         )..sort((r1, r2) => r1.time.toDouble().compareTo(r2.time.toDouble()));
-        updateNotifications(reminders);
+        _updateNotifications(reminders);
         emit(state.copyWith(reminders: reminders));
       }
     });
   }
 
-  Future<void> updateNotifications(List<Reminder> reminders) async {
+  Future<void> _updateNotifications(List<Reminder> reminders) async {
     final plugin = FlutterLocalNotificationsPlugin();
+    // For now, cancel all notifications because dupes are scheduled when
+    // any metadata changes
+    await plugin.cancelAll();
     final location = tz.getLocation('America/New_York');
     final now = DateTime.now();
     for (final reminder in reminders) {
@@ -109,10 +112,10 @@ class RemindersCubit extends Cubit<RemindersState> {
       } else {
         time = tz.TZDateTime.now(location).add(difference);
       }
-      unawaited(FirebaseCrashlytics.instance.log('Scheduling notification for $time'));
+      Log.info('Scheduling notification for $time');
       await plugin.zonedSchedule(
         int.parse(reminder.id.replaceAll(RegExp('[^0-9]'), '').substring(0, 5)),
-        '// TODO: Include group name',
+        'A task needs to be completed',
         reminder.title,
         time,
         const NotificationDetails(
@@ -126,7 +129,9 @@ class RemindersCubit extends Cubit<RemindersState> {
         androidAllowWhileIdle: true,
         matchDateTimeComponents: DateTimeComponents.time,
       );
-      unawaited(FirebaseCrashlytics.instance.log('Scheduled notification for $reminder'));
+      Log.info('Scheduled notification for $reminder');
+      final pending = await plugin.pendingNotificationRequests();
+      emit(state.copyWith(notifications: pending));
     }
   }
 

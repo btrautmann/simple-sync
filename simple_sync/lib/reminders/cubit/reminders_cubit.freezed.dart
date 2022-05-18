@@ -19,6 +19,8 @@ mixin _$RemindersState {
   Account? get user => throw _privateConstructorUsedError;
   SyncGroup? get syncGroup => throw _privateConstructorUsedError;
   List<Reminder> get reminders => throw _privateConstructorUsedError;
+  List<PendingNotificationRequest> get notifications =>
+      throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $RemindersStateCopyWith<RemindersState> get copyWith =>
@@ -30,7 +32,11 @@ abstract class $RemindersStateCopyWith<$Res> {
   factory $RemindersStateCopyWith(
           RemindersState value, $Res Function(RemindersState) then) =
       _$RemindersStateCopyWithImpl<$Res>;
-  $Res call({Account? user, SyncGroup? syncGroup, List<Reminder> reminders});
+  $Res call(
+      {Account? user,
+      SyncGroup? syncGroup,
+      List<Reminder> reminders,
+      List<PendingNotificationRequest> notifications});
 
   $AccountCopyWith<$Res>? get user;
   $SyncGroupCopyWith<$Res>? get syncGroup;
@@ -50,6 +56,7 @@ class _$RemindersStateCopyWithImpl<$Res>
     Object? user = freezed,
     Object? syncGroup = freezed,
     Object? reminders = freezed,
+    Object? notifications = freezed,
   }) {
     return _then(_value.copyWith(
       user: user == freezed
@@ -64,6 +71,10 @@ class _$RemindersStateCopyWithImpl<$Res>
           ? _value.reminders
           : reminders // ignore: cast_nullable_to_non_nullable
               as List<Reminder>,
+      notifications: notifications == freezed
+          ? _value.notifications
+          : notifications // ignore: cast_nullable_to_non_nullable
+              as List<PendingNotificationRequest>,
     ));
   }
 
@@ -97,7 +108,11 @@ abstract class _$$_ReminderStateCopyWith<$Res>
           _$_ReminderState value, $Res Function(_$_ReminderState) then) =
       __$$_ReminderStateCopyWithImpl<$Res>;
   @override
-  $Res call({Account? user, SyncGroup? syncGroup, List<Reminder> reminders});
+  $Res call(
+      {Account? user,
+      SyncGroup? syncGroup,
+      List<Reminder> reminders,
+      List<PendingNotificationRequest> notifications});
 
   @override
   $AccountCopyWith<$Res>? get user;
@@ -121,6 +136,7 @@ class __$$_ReminderStateCopyWithImpl<$Res>
     Object? user = freezed,
     Object? syncGroup = freezed,
     Object? reminders = freezed,
+    Object? notifications = freezed,
   }) {
     return _then(_$_ReminderState(
       user: user == freezed
@@ -135,6 +151,10 @@ class __$$_ReminderStateCopyWithImpl<$Res>
           ? _value._reminders
           : reminders // ignore: cast_nullable_to_non_nullable
               as List<Reminder>,
+      notifications: notifications == freezed
+          ? _value._notifications
+          : notifications // ignore: cast_nullable_to_non_nullable
+              as List<PendingNotificationRequest>,
     ));
   }
 }
@@ -145,8 +165,11 @@ class _$_ReminderState implements _ReminderState {
   const _$_ReminderState(
       {required this.user,
       required this.syncGroup,
-      required final List<Reminder> reminders})
-      : _reminders = reminders;
+      required final List<Reminder> reminders,
+      final List<PendingNotificationRequest> notifications =
+          const <PendingNotificationRequest>[]})
+      : _reminders = reminders,
+        _notifications = notifications;
 
   @override
   final Account? user;
@@ -159,9 +182,17 @@ class _$_ReminderState implements _ReminderState {
     return EqualUnmodifiableListView(_reminders);
   }
 
+  final List<PendingNotificationRequest> _notifications;
+  @override
+  @JsonKey()
+  List<PendingNotificationRequest> get notifications {
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_notifications);
+  }
+
   @override
   String toString() {
-    return 'RemindersState(user: $user, syncGroup: $syncGroup, reminders: $reminders)';
+    return 'RemindersState(user: $user, syncGroup: $syncGroup, reminders: $reminders, notifications: $notifications)';
   }
 
   @override
@@ -172,7 +203,9 @@ class _$_ReminderState implements _ReminderState {
             const DeepCollectionEquality().equals(other.user, user) &&
             const DeepCollectionEquality().equals(other.syncGroup, syncGroup) &&
             const DeepCollectionEquality()
-                .equals(other._reminders, _reminders));
+                .equals(other._reminders, _reminders) &&
+            const DeepCollectionEquality()
+                .equals(other._notifications, _notifications));
   }
 
   @override
@@ -180,7 +213,8 @@ class _$_ReminderState implements _ReminderState {
       runtimeType,
       const DeepCollectionEquality().hash(user),
       const DeepCollectionEquality().hash(syncGroup),
-      const DeepCollectionEquality().hash(_reminders));
+      const DeepCollectionEquality().hash(_reminders),
+      const DeepCollectionEquality().hash(_notifications));
 
   @JsonKey(ignore: true)
   @override
@@ -192,7 +226,8 @@ abstract class _ReminderState implements RemindersState {
   const factory _ReminderState(
       {required final Account? user,
       required final SyncGroup? syncGroup,
-      required final List<Reminder> reminders}) = _$_ReminderState;
+      required final List<Reminder> reminders,
+      final List<PendingNotificationRequest> notifications}) = _$_ReminderState;
 
   @override
   Account? get user => throw _privateConstructorUsedError;
@@ -200,6 +235,9 @@ abstract class _ReminderState implements RemindersState {
   SyncGroup? get syncGroup => throw _privateConstructorUsedError;
   @override
   List<Reminder> get reminders => throw _privateConstructorUsedError;
+  @override
+  List<PendingNotificationRequest> get notifications =>
+      throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
   _$$_ReminderStateCopyWith<_$_ReminderState> get copyWith =>

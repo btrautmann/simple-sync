@@ -4,10 +4,13 @@ import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:simple_sync/account/models/account.dart';
 import 'package:simple_sync/reminders/models/reminder.dart';
 import 'package:simple_sync/reminders/models/sync_group.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 part 'reminders_state.dart';
 part 'reminders_cubit.freezed.dart';
@@ -80,9 +83,46 @@ class RemindersCubit extends Cubit<RemindersState> {
             event.docs[index].data(),
           ),
         )..sort((r1, r2) => r1.time.toDouble().compareTo(r2.time.toDouble()));
+        updateNotifications(reminders);
         emit(state.copyWith(reminders: reminders));
       }
     });
+  }
+
+  Future<void> updateNotifications(List<Reminder> reminders) async {
+    final plugin = FlutterLocalNotificationsPlugin();
+    final location = tz.getLocation('America/New_York');
+    final now = DateTime.now();
+    for (final reminder in reminders) {
+      final reminderTime = DateTime(
+        now.year,
+        now.month,
+        now.day,
+        reminder.time.hour,
+        reminder.time.minute,
+      );
+      final difference = now.difference(reminderTime);
+      late tz.TZDateTime time;
+      if (reminderTime.isBefore(now)) {
+        final duration = const Duration(days: 1).inMilliseconds - difference.inMilliseconds;
+        time = tz.TZDateTime.now(location).add(Duration(milliseconds: duration));
+      } else {
+        time = tz.TZDateTime.now(location).add(difference);
+      }
+      unawaited(FirebaseCrashlytics.instance.log('Scheduling notification for $time'));
+      await plugin.zonedSchedule(
+        int.parse(reminder.id.replaceAll(RegExp('[^0-9]'), '').substring(0, 8)),
+        '// TODO: Include group name',
+        reminder.title,
+        time,
+        const NotificationDetails(
+          iOS: IOSNotificationDetails(presentAlert: true, presentBadge: true, presentSound: true),
+        ),
+        uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.wallClockTime,
+        androidAllowWhileIdle: true,
+      );
+      unawaited(FirebaseCrashlytics.instance.log('Scheduled notification for $reminder'));
+    }
   }
 
   Future<void> createReminder(Reminder reminder) async {

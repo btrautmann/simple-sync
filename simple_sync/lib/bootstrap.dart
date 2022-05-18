@@ -9,7 +9,10 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/data/latest_all.dart' as tz;
 
 class AppBlocObserver extends BlocObserver {
   @override
@@ -27,8 +30,23 @@ class AppBlocObserver extends BlocObserver {
 
 Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   FlutterError.onError = (details) {
-    log(details.exceptionAsString(), stackTrace: details.stack);
+    FirebaseCrashlytics.instance.recordFlutterError(details);
   };
+
+  const initializationSettingsIOS = IOSInitializationSettings(
+    onDidReceiveLocalNotification: onDidReceiveLocalNotification,
+  );
+  const initializationSettings = InitializationSettings(
+    iOS: initializationSettingsIOS,
+  );
+  await FlutterLocalNotificationsPlugin().initialize(
+    initializationSettings,
+    onSelectNotification: (content) {
+      log('Tapped notification with content $content');
+    },
+  );
+
+  tz.initializeTimeZones();
 
   await runZonedGuarded(
     () async {
@@ -37,6 +55,15 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
         blocObserver: AppBlocObserver(),
       );
     },
-    (error, stackTrace) => log(error.toString(), stackTrace: stackTrace),
+    (error, stackTrace) => FirebaseCrashlytics.instance.recordError(error.toString(), stackTrace),
   );
+}
+
+Future<void> onDidReceiveLocalNotification(
+  int id,
+  String? title,
+  String? body,
+  String? payload,
+) async {
+  log('Got notification with id $id and title $title');
 }

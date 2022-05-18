@@ -120,6 +120,7 @@ class RemindersCubit extends Cubit<RemindersState> {
         ),
         uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.wallClockTime,
         androidAllowWhileIdle: true,
+        matchDateTimeComponents: DateTimeComponents.time,
       );
       unawaited(FirebaseCrashlytics.instance.log('Scheduled notification for $reminder'));
     }
